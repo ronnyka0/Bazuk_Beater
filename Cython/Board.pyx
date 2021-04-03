@@ -1,4 +1,6 @@
 #cython: language_level=3
+import Move_Gen
+cimport Move_Gen
 cdef dict PIECES = {".": 0, "p": 1, "n": 2, "b": 3, "r": 4, "q": 5, "k": 6, "P": 7, "N": 8, "B": 9, "R": 10, "Q": 11, "K": 12}
 cdef dict PIECES_REV = {value: key for (key, value) in PIECES.items()}
 cdef str DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -43,14 +45,53 @@ cdef class Board:
                 self.bit_boards[PIECES[i]] |= 1uLL << index
                 index += 1
 
-    #TODO: decide how to implement enpessant and finish implementing it
     cdef void parse_enpessant(self, enpassant_string):
         #given the part of the FEN relevant to enpessant captures updates the board appropriately
-        pass
+        if not enpassant_string == "-":
+            is_black = (enpassant_string[1] == "6")
+            index = ord(enpassant_string[0]) - ord('a') + (8 * is_black)
+            self.enpessant |= 1 << index
 
 
-    cdef unsigned long long
+    cpdef void make_move(self, Move_Gen.Move move):
+        move_encoding = move.move
+        starting_pos = (move_encoding >> 10)
+        final_pos = ((move_encoding >> 4) & ((1 << 7) - 1))
+        flags = move_encoding & ((1 << 4) - 1)
+        piece = 0
+        for i in range(12):
+            self.bit_boards[i+1] &= ~(1uLL << final_pos)
+            if (self.bit_boards[i+1] >> starting_pos) & 1:
+                piece = i + 1
+                self.replace_piece(starting_pos, i+1, 0)
+        if self.side_to_move:
+            if (flags >> 3) & 1:
+                self.bit_boards[1 + (move_encoding & ((1 << 4) - 1))]
+            if flags == 5:
+                self.replace_piece(final_pos + 8, 1, 0)
+                self.enpessant = 0
+            if flags == 3:
+                self.replace_piece(59, 0, 10)
+                self.replace_piece(56, 10, 0)
+                self.castle_rights[0] = 0
+                self.castle_rights[1] = 0
 
+        else:
+            if (flags >> 3) & 1:
+                self.bit_boards[7 + (move_encoding & ((1 << 4) - 1))]
+            if (flags) == 5:
+                self.replace_piece(final_pos - 8, 7, 0)
+            if flags == 3:
+                self.replace_piece(3, 0, 4)
+                self.replace_piece(0, 4, 0)
+                self.castle_rights[2] = 0
+                self.castle_rights[3] = 0
+        self.replace_piece(final_pos, 0, piece)
+
+
+    cdef inline replace_piece(self, int square, int prev_piece, int next_piece):
+        self.bit_boards[prev_piece] &= ~ (1uLL << square)
+        self.bit_boards[next_piece] |= 1uLL << square
 
 
     #TODO: will be changed after addition of UI to turn the board into an FEN string
@@ -63,7 +104,7 @@ cdef class Board:
                 for p in range (13):
                     val = bit_boards[p]
                     if BitBoard.read_bit(j + 1, i + 1, val):
-                        board += PIECES_REV[p] + str(i) + ", " + str(j) + " "
+                        board += PIECES_REV[p] + " "
             board += "\n"
         return board
 

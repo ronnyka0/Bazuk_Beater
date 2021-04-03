@@ -2,13 +2,13 @@ from setuptools import Extension, setup
 from Cython.Build import cythonize
 import numpy
 
-for name in ["Board", "Maps"]:
+for name in ["Board", "Move_Gen", "Maps"]:
     ext_modules = [
         Extension(
             name,
             [name + ".pyx"],
-            extra_compile_args=['-fopenmp'],
-            extra_link_args=['-fopenmp'],
+            extra_compile_args=[''],
+            extra_link_args=[''],
             include_dirs=[numpy.get_include()],
         )
     ]
