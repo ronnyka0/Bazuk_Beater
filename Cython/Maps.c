@@ -4,10 +4,10 @@
 {
     "distutils": {
         "extra_compile_args": [
-            "-fopenmp"
+            ""
         ],
         "extra_link_args": [
-            "-fopenmp"
+            ""
         ],
         "include_dirs": [
             "C:\\Users\\Ronny Katzman\\PycharmProjects\\bazuk_beater\\venv\\lib\\site-packages\\numpy\\core\\include"
@@ -839,13 +839,34 @@ static const char *__pyx_f[] = {
 };
 
 /*--- Type declarations ---*/
+struct __pyx_obj_5Board_Board;
 struct __pyx_obj_5Board_BitBoard;
 
-/* "Board.pxd":2
- * #cython: language_level=3
+/* "Board.pxd":5
+ * cimport Move_Gen
+ * 
+ * cdef class Board:             # <<<<<<<<<<<<<<
+ *     cdef bint side_to_move
+ *     cdef unsigned long long bit_boards[13]
+ */
+struct __pyx_obj_5Board_Board {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_5Board_Board *__pyx_vtab;
+  int side_to_move;
+  unsigned PY_LONG_LONG bit_boards[13];
+  int castle_rights[4];
+  unsigned short enpessant;
+  int half_move_counter;
+  int full_move_counter;
+};
+
+
+/* "Board.pxd":29
+ * 
+ * 
  * cdef class BitBoard:             # <<<<<<<<<<<<<<
+ * 
  *     @staticmethod
- *     cdef inline unsigned long long write_bit(int, int)
  */
 struct __pyx_obj_5Board_BitBoard {
   PyObject_HEAD
@@ -853,6 +874,34 @@ struct __pyx_obj_5Board_BitBoard {
 };
 
 
+
+/* "Board.pxd":5
+ * cimport Move_Gen
+ * 
+ * cdef class Board:             # <<<<<<<<<<<<<<
+ *     cdef bint side_to_move
+ *     cdef unsigned long long bit_boards[13]
+ */
+
+struct __pyx_vtabstruct_5Board_Board {
+  struct __pyx_obj_5Board_Board *(*board_from_board)(struct __pyx_obj_5Board_Board *);
+  void (*make_move)(struct __pyx_obj_5Board_Board *, unsigned short, int __pyx_skip_dispatch);
+  void (*replace_piece)(struct __pyx_obj_5Board_Board *, int, int, int);
+  unsigned PY_LONG_LONG (*checking_bitboard)(struct __pyx_obj_5Board_Board *, int);
+  unsigned PY_LONG_LONG (*get_occupancy_side)(struct __pyx_obj_5Board_Board *);
+  unsigned PY_LONG_LONG (*get_white_occupancy)(struct __pyx_obj_5Board_Board *);
+  unsigned PY_LONG_LONG (*get_black_occupancy)(struct __pyx_obj_5Board_Board *);
+};
+static struct __pyx_vtabstruct_5Board_Board *__pyx_vtabptr_5Board_Board;
+
+
+/* "Board.pxd":29
+ * 
+ * 
+ * cdef class BitBoard:             # <<<<<<<<<<<<<<
+ * 
+ *     @staticmethod
+ */
 
 struct __pyx_vtabstruct_5Board_BitBoard {
   unsigned PY_LONG_LONG (*write_bit)(int, int);
@@ -1100,11 +1149,17 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
 /* CheckBinaryVersion.proto */
 static int __Pyx_check_binary_version(void);
 
+/* FunctionExport.proto */
+static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *sig);
+
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
+/* Module declarations from 'Move_Gen' */
+
 /* Module declarations from 'Board' */
+static PyTypeObject *__pyx_ptype_5Board_Board = 0;
 static PyTypeObject *__pyx_ptype_5Board_BitBoard = 0;
 
 /* Module declarations from 'Maps' */
@@ -1123,6 +1178,7 @@ static int __pyx_v_4Maps_BISHOP_RELEVANT_BITS[64];
 static unsigned PY_LONG_LONG __pyx_v_4Maps_BISHOP_MASKS[64];
 static CYTHON_INLINE unsigned PY_LONG_LONG __pyx_f_4Maps_get_rook_maps(int, unsigned PY_LONG_LONG); /*proto*/
 static CYTHON_INLINE unsigned PY_LONG_LONG __pyx_f_4Maps_get_bishop_maps(int, unsigned PY_LONG_LONG); /*proto*/
+static void __pyx_f_4Maps_setup_vars(void); /*proto*/
 static unsigned PY_LONG_LONG __pyx_f_4Maps_modify_mask(unsigned PY_LONG_LONG, int); /*proto*/
 static void __pyx_f_4Maps_setup_rook_attacks(void); /*proto*/
 static void __pyx_f_4Maps_setup_rook_masks(void); /*proto*/
@@ -1134,6 +1190,7 @@ static void __pyx_f_4Maps_setup_knight_attacks(void); /*proto*/
 static unsigned PY_LONG_LONG __pyx_f_4Maps_calculate_knight_attacks_on_the_fly(int, int); /*proto*/
 static void __pyx_f_4Maps_setup_king_attacks(void); /*proto*/
 static unsigned PY_LONG_LONG __pyx_f_4Maps_calculate_king_attacks_on_the_fly(int, int); /*proto*/
+static void __pyx_f_4Maps_setup_pawn_attacks(void); /*proto*/
 static unsigned PY_LONG_LONG __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly(int, int, int); /*proto*/
 #define __Pyx_MODULE_NAME "Maps"
 extern int __pyx_module_is_main_Maps;
@@ -2876,7 +2933,7 @@ static void __pyx_f_4Maps_setup_knight_attacks(void) {
  *     cdef int j
  *     for i in range(8):             # <<<<<<<<<<<<<<
  *         for j in range(8):
- *             KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(i + 1, j + 1)
+ *             KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(j + 1, i + 1)
  */
   for (__pyx_t_1 = 0; __pyx_t_1 < 8; __pyx_t_1+=1) {
     __pyx_v_i = __pyx_t_1;
@@ -2885,7 +2942,7 @@ static void __pyx_f_4Maps_setup_knight_attacks(void) {
  *     cdef int j
  *     for i in range(8):
  *         for j in range(8):             # <<<<<<<<<<<<<<
- *             KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(i + 1, j + 1)
+ *             KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(j + 1, i + 1)
  * 
  */
     for (__pyx_t_2 = 0; __pyx_t_2 < 8; __pyx_t_2+=1) {
@@ -2894,11 +2951,11 @@ static void __pyx_f_4Maps_setup_knight_attacks(void) {
       /* "Maps.pyx":371
  *     for i in range(8):
  *         for j in range(8):
- *             KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(i + 1, j + 1)             # <<<<<<<<<<<<<<
+ *             KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(j + 1, i + 1)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      (__pyx_v_4Maps_KNIGHT_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_knight_attacks_on_the_fly((__pyx_v_i + 1), (__pyx_v_j + 1));
+      (__pyx_v_4Maps_KNIGHT_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_knight_attacks_on_the_fly((__pyx_v_j + 1), (__pyx_v_i + 1));
     }
   }
 
@@ -3283,7 +3340,7 @@ static void __pyx_f_4Maps_setup_king_attacks(void) {
  *     cdef int j
  *     for i in range(8):             # <<<<<<<<<<<<<<
  *         for j in range(8):
- *             KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(i + 1, j + 1)
+ *             KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(j + 1, i + 1)
  */
   for (__pyx_t_1 = 0; __pyx_t_1 < 8; __pyx_t_1+=1) {
     __pyx_v_i = __pyx_t_1;
@@ -3292,7 +3349,7 @@ static void __pyx_f_4Maps_setup_king_attacks(void) {
  *     cdef int j
  *     for i in range(8):
  *         for j in range(8):             # <<<<<<<<<<<<<<
- *             KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(i + 1, j + 1)
+ *             KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(j + 1, i + 1)
  * 
  */
     for (__pyx_t_2 = 0; __pyx_t_2 < 8; __pyx_t_2+=1) {
@@ -3301,11 +3358,11 @@ static void __pyx_f_4Maps_setup_king_attacks(void) {
       /* "Maps.pyx":410
  *     for i in range(8):
  *         for j in range(8):
- *             KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(i + 1, j + 1)             # <<<<<<<<<<<<<<
+ *             KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(j + 1, i + 1)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      (__pyx_v_4Maps_KING_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_king_attacks_on_the_fly((__pyx_v_i + 1), (__pyx_v_j + 1));
+      (__pyx_v_4Maps_KING_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_king_attacks_on_the_fly((__pyx_v_j + 1), (__pyx_v_i + 1));
     }
   }
 
@@ -3379,7 +3436,7 @@ static void __pyx_f_4Maps_setup_pawn_attacks(void) {
  *     cdef int j
  *     for i in range(8):             # <<<<<<<<<<<<<<
  *         for j in range(8):
- *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 1)
+ *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 1)
  */
   for (__pyx_t_1 = 0; __pyx_t_1 < 8; __pyx_t_1+=1) {
     __pyx_v_i = __pyx_t_1;
@@ -3388,8 +3445,8 @@ static void __pyx_f_4Maps_setup_pawn_attacks(void) {
  *     cdef int j
  *     for i in range(8):
  *         for j in range(8):             # <<<<<<<<<<<<<<
- *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 1)
- *             BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 0)
+ *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 1)
+ *             BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 0)
  */
     for (__pyx_t_2 = 0; __pyx_t_2 < 8; __pyx_t_2+=1) {
       __pyx_v_j = __pyx_t_2;
@@ -3397,20 +3454,20 @@ static void __pyx_f_4Maps_setup_pawn_attacks(void) {
       /* "Maps.pyx":427
  *     for i in range(8):
  *         for j in range(8):
- *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 1)             # <<<<<<<<<<<<<<
- *             BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 0)
+ *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 1)             # <<<<<<<<<<<<<<
+ *             BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 0)
  * 
  */
-      (__pyx_v_4Maps_WHITE_PAWN_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly((__pyx_v_i + 1), (__pyx_v_j + 1), 1);
+      (__pyx_v_4Maps_WHITE_PAWN_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly((__pyx_v_j + 1), (__pyx_v_i + 1), 1);
 
       /* "Maps.pyx":428
  *         for j in range(8):
- *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 1)
- *             BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 0)             # <<<<<<<<<<<<<<
+ *             WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 1)
+ *             BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 0)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      (__pyx_v_4Maps_BLACK_PAWN_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly((__pyx_v_i + 1), (__pyx_v_j + 1), 0);
+      (__pyx_v_4Maps_BLACK_PAWN_MAPS[((__pyx_v_i * 8) + __pyx_v_j)]) = __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly((__pyx_v_j + 1), (__pyx_v_i + 1), 0);
     }
   }
 
@@ -3429,12 +3486,12 @@ static void __pyx_f_4Maps_setup_pawn_attacks(void) {
 /* "Maps.pyx":431
  * 
  * 
- * cdef unsigned long long calculate_pawn_attacks_on_the_fly(int i, int j, bint side):             # <<<<<<<<<<<<<<
+ * cdef unsigned long long calculate_pawn_attacks_on_the_fly(int file, int rank, bint side):             # <<<<<<<<<<<<<<
  *     #calculates pawn attacks on the fly
  *     #side is 1 if white 0 if black
  */
 
-static unsigned PY_LONG_LONG __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly(int __pyx_v_i, int __pyx_v_j, int __pyx_v_side) {
+static unsigned PY_LONG_LONG __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly(int __pyx_v_file, int __pyx_v_rank, int __pyx_v_side) {
   unsigned PY_LONG_LONG __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3444,7 +3501,7 @@ static unsigned PY_LONG_LONG __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly(int
  *     #calculates pawn attacks on the fly
  *     #side is 1 if white 0 if black
  *     if side:             # <<<<<<<<<<<<<<
- *         return BitBoard.write_bit(i - 1, j + 1) | BitBoard.write_bit(i - 1, j - 1)
+ *         return BitBoard.write_bit(file - 1, rank - 1) | BitBoard.write_bit(file + 1, rank - 1)
  *     else:
  */
   __pyx_t_1 = (__pyx_v_side != 0);
@@ -3453,38 +3510,38 @@ static unsigned PY_LONG_LONG __pyx_f_4Maps_calculate_pawn_attacks_on_the_fly(int
     /* "Maps.pyx":435
  *     #side is 1 if white 0 if black
  *     if side:
- *         return BitBoard.write_bit(i - 1, j + 1) | BitBoard.write_bit(i - 1, j - 1)             # <<<<<<<<<<<<<<
+ *         return BitBoard.write_bit(file - 1, rank - 1) | BitBoard.write_bit(file + 1, rank - 1)             # <<<<<<<<<<<<<<
  *     else:
- *         return BitBoard.write_bit(i + 1, j + 1) | BitBoard.write_bit(i + 1, j - 1)
+ *         return BitBoard.write_bit(file - 1, rank + 1) | BitBoard.write_bit(file + 1, rank + 1)
  */
-    __pyx_r = (__pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_i - 1), (__pyx_v_j + 1)) | __pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_i - 1), (__pyx_v_j - 1)));
+    __pyx_r = (__pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_file - 1), (__pyx_v_rank - 1)) | __pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_file + 1), (__pyx_v_rank - 1)));
     goto __pyx_L0;
 
     /* "Maps.pyx":434
  *     #calculates pawn attacks on the fly
  *     #side is 1 if white 0 if black
  *     if side:             # <<<<<<<<<<<<<<
- *         return BitBoard.write_bit(i - 1, j + 1) | BitBoard.write_bit(i - 1, j - 1)
+ *         return BitBoard.write_bit(file - 1, rank - 1) | BitBoard.write_bit(file + 1, rank - 1)
  *     else:
  */
   }
 
   /* "Maps.pyx":437
- *         return BitBoard.write_bit(i - 1, j + 1) | BitBoard.write_bit(i - 1, j - 1)
+ *         return BitBoard.write_bit(file - 1, rank - 1) | BitBoard.write_bit(file + 1, rank - 1)
  *     else:
- *         return BitBoard.write_bit(i + 1, j + 1) | BitBoard.write_bit(i + 1, j - 1)             # <<<<<<<<<<<<<<
+ *         return BitBoard.write_bit(file - 1, rank + 1) | BitBoard.write_bit(file + 1, rank + 1)             # <<<<<<<<<<<<<<
  * 
  * 
  */
   /*else*/ {
-    __pyx_r = (__pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_i + 1), (__pyx_v_j + 1)) | __pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_i + 1), (__pyx_v_j - 1)));
+    __pyx_r = (__pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_file - 1), (__pyx_v_rank + 1)) | __pyx_vtabptr_5Board_BitBoard->write_bit((__pyx_v_file + 1), (__pyx_v_rank + 1)));
     goto __pyx_L0;
   }
 
   /* "Maps.pyx":431
  * 
  * 
- * cdef unsigned long long calculate_pawn_attacks_on_the_fly(int i, int j, bint side):             # <<<<<<<<<<<<<<
+ * cdef unsigned long long calculate_pawn_attacks_on_the_fly(int file, int rank, bint side):             # <<<<<<<<<<<<<<
  *     #calculates pawn attacks on the fly
  *     #side is 1 if white 0 if black
  */
@@ -3550,7 +3607,7 @@ static void __pyx_f_4Maps_setup_vars(void) {
  *         setup_rook_attacks()
  *         setup_bishop_attacks()             # <<<<<<<<<<<<<<
  *         setup_knight_attacks()
- *         setup_king_attacks()
+ *         setup_pawn_attacks()
  */
     __pyx_f_4Maps_setup_bishop_attacks();
 
@@ -3558,14 +3615,23 @@ static void __pyx_f_4Maps_setup_vars(void) {
  *         setup_rook_attacks()
  *         setup_bishop_attacks()
  *         setup_knight_attacks()             # <<<<<<<<<<<<<<
+ *         setup_pawn_attacks()
  *         setup_king_attacks()
- *     _INITED = True
  */
     __pyx_f_4Maps_setup_knight_attacks();
 
     /* "Maps.pyx":449
  *         setup_bishop_attacks()
  *         setup_knight_attacks()
+ *         setup_pawn_attacks()             # <<<<<<<<<<<<<<
+ *         setup_king_attacks()
+ *     _INITED = True
+ */
+    __pyx_f_4Maps_setup_pawn_attacks();
+
+    /* "Maps.pyx":450
+ *         setup_knight_attacks()
+ *         setup_pawn_attacks()
  *         setup_king_attacks()             # <<<<<<<<<<<<<<
  *     _INITED = True
  * 
@@ -3581,11 +3647,12 @@ static void __pyx_f_4Maps_setup_vars(void) {
  */
   }
 
-  /* "Maps.pyx":450
- *         setup_knight_attacks()
+  /* "Maps.pyx":451
+ *         setup_pawn_attacks()
  *         setup_king_attacks()
  *     _INITED = True             # <<<<<<<<<<<<<<
  * 
+ * #runs at every import
  */
   __pyx_v_4Maps__INITED = 1;
 
@@ -3706,10 +3773,23 @@ static int __Pyx_modinit_variable_export_code(void) {
 
 static int __Pyx_modinit_function_export_code(void) {
   __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
+  if (__Pyx_ExportFunction("get_king_maps", (void (*)(void))__pyx_f_4Maps_get_king_maps, "unsigned PY_LONG_LONG (int)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("get_pawn_maps", (void (*)(void))__pyx_f_4Maps_get_pawn_maps, "unsigned PY_LONG_LONG (int, int)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("get_rook_maps", (void (*)(void))__pyx_f_4Maps_get_rook_maps, "unsigned PY_LONG_LONG (int, unsigned PY_LONG_LONG)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("get_bishop_maps", (void (*)(void))__pyx_f_4Maps_get_bishop_maps, "unsigned PY_LONG_LONG (int, unsigned PY_LONG_LONG)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("get_queen_maps", (void (*)(void))__pyx_f_4Maps_get_queen_maps, "unsigned PY_LONG_LONG (int, unsigned PY_LONG_LONG)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("get_knight_maps", (void (*)(void))__pyx_f_4Maps_get_knight_maps, "unsigned PY_LONG_LONG (int)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("setup_vars", (void (*)(void))__pyx_f_4Maps_setup_vars, "void (void)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
+  __pyx_L1_error:;
+  __Pyx_RefNannyFinishContext();
+  return -1;
 }
 
 static int __Pyx_modinit_type_init_code(void) {
@@ -3728,11 +3808,14 @@ static int __Pyx_modinit_type_import_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_import_code", 0);
   /*--- Type import code ---*/
-  __pyx_t_1 = PyImport_ImportModule("Board"); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("Board"); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  __pyx_ptype_5Board_Board = __Pyx_ImportType(__pyx_t_1, "Board", "Board", sizeof(struct __pyx_obj_5Board_Board), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_5Board_Board) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_vtabptr_5Board_Board = (struct __pyx_vtabstruct_5Board_Board*)__Pyx_GetVtable(__pyx_ptype_5Board_Board->tp_dict); if (unlikely(!__pyx_vtabptr_5Board_Board)) __PYX_ERR(1, 5, __pyx_L1_error)
   __pyx_ptype_5Board_BitBoard = __Pyx_ImportType(__pyx_t_1, "Board", "BitBoard", sizeof(struct __pyx_obj_5Board_BitBoard), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5Board_BitBoard) __PYX_ERR(1, 2, __pyx_L1_error)
-  __pyx_vtabptr_5Board_BitBoard = (struct __pyx_vtabstruct_5Board_BitBoard*)__Pyx_GetVtable(__pyx_ptype_5Board_BitBoard->tp_dict); if (unlikely(!__pyx_vtabptr_5Board_BitBoard)) __PYX_ERR(1, 2, __pyx_L1_error)
+   if (!__pyx_ptype_5Board_BitBoard) __PYX_ERR(1, 29, __pyx_L1_error)
+  __pyx_vtabptr_5Board_BitBoard = (struct __pyx_vtabstruct_5Board_BitBoard*)__Pyx_GetVtable(__pyx_ptype_5Board_BitBoard->tp_dict); if (unlikely(!__pyx_vtabptr_5Board_BitBoard)) __PYX_ERR(1, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -3954,7 +4037,7 @@ if (!__Pyx_RefNanny) {
   /*--- Global type/function init code ---*/
   (void)__Pyx_modinit_global_init_code();
   (void)__Pyx_modinit_variable_export_code();
-  (void)__Pyx_modinit_function_export_code();
+  if (unlikely(__Pyx_modinit_function_export_code() < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
   (void)__Pyx_modinit_type_init_code();
   if (unlikely(__Pyx_modinit_type_import_code() < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
   (void)__Pyx_modinit_variable_import_code();
@@ -4264,6 +4347,13 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4[62] = 5;
   __pyx_t_4[63] = 6;
   memcpy(&(__pyx_v_4Maps_BISHOP_RELEVANT_BITS[0]), __pyx_t_4, sizeof(__pyx_v_4Maps_BISHOP_RELEVANT_BITS[0]) * (64));
+
+  /* "Maps.pyx":454
+ * 
+ * #runs at every import
+ * setup_vars()             # <<<<<<<<<<<<<<
+ */
+  __pyx_f_4Maps_setup_vars();
 
   /* "Maps.pyx":1
  * #cython: language_level=3             # <<<<<<<<<<<<<<
@@ -5820,6 +5910,43 @@ static int __Pyx_check_binary_version(void) {
         return PyErr_WarnEx(NULL, message, 1);
     }
     return 0;
+}
+
+/* FunctionExport */
+static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *sig) {
+    PyObject *d = 0;
+    PyObject *cobj = 0;
+    union {
+        void (*fp)(void);
+        void *p;
+    } tmp;
+    d = PyObject_GetAttrString(__pyx_m, (char *)"__pyx_capi__");
+    if (!d) {
+        PyErr_Clear();
+        d = PyDict_New();
+        if (!d)
+            goto bad;
+        Py_INCREF(d);
+        if (PyModule_AddObject(__pyx_m, (char *)"__pyx_capi__", d) < 0)
+            goto bad;
+    }
+    tmp.fp = f;
+#if PY_VERSION_HEX >= 0x02070000
+    cobj = PyCapsule_New(tmp.p, sig, 0);
+#else
+    cobj = PyCObject_FromVoidPtrAndDesc(tmp.p, (void *)sig, 0);
+#endif
+    if (!cobj)
+        goto bad;
+    if (PyDict_SetItemString(d, name, cobj) < 0)
+        goto bad;
+    Py_DECREF(cobj);
+    Py_DECREF(d);
+    return 0;
+bad:
+    Py_XDECREF(cobj);
+    Py_XDECREF(d);
+    return -1;
 }
 
 /* InitStrings */

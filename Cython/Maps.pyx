@@ -368,7 +368,7 @@ cdef void setup_knight_attacks():
     cdef int j
     for i in range(8):
         for j in range(8):
-            KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(i + 1, j + 1)
+            KNIGHT_MAPS[i * 8 + j] = calculate_knight_attacks_on_the_fly(j + 1, i + 1)
 
 
 cdef unsigned long long calculate_knight_attacks_on_the_fly(int kf, int kr):
@@ -407,7 +407,7 @@ cdef void setup_king_attacks():
     cdef int j
     for i in range(8):
         for j in range(8):
-            KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(i + 1, j + 1)
+            KING_MAPS[i * 8 + j] = calculate_king_attacks_on_the_fly(j + 1, i + 1)
 
 
 cdef unsigned long long calculate_king_attacks_on_the_fly(int i, int j):
@@ -424,17 +424,17 @@ cdef void setup_pawn_attacks():
     cdef int j
     for i in range(8):
         for j in range(8):
-            WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 1)
-            BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(i + 1, j + 1, 0)
+            WHITE_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 1)
+            BLACK_PAWN_MAPS[i * 8 + j] = calculate_pawn_attacks_on_the_fly(j + 1, i + 1, 0)
 
 
-cdef unsigned long long calculate_pawn_attacks_on_the_fly(int i, int j, bint side):
+cdef unsigned long long calculate_pawn_attacks_on_the_fly(int file, int rank, bint side):
     #calculates pawn attacks on the fly
     #side is 1 if white 0 if black
     if side:
-        return BitBoard.write_bit(i - 1, j + 1) | BitBoard.write_bit(i - 1, j - 1)
+        return BitBoard.write_bit(file - 1, rank - 1) | BitBoard.write_bit(file + 1, rank - 1)
     else:
-        return BitBoard.write_bit(i + 1, j + 1) | BitBoard.write_bit(i + 1, j - 1)
+        return BitBoard.write_bit(file - 1, rank + 1) | BitBoard.write_bit(file + 1, rank + 1)
 
 
 cdef void setup_vars():
@@ -446,6 +446,9 @@ cdef void setup_vars():
         setup_rook_attacks()
         setup_bishop_attacks()
         setup_knight_attacks()
+        setup_pawn_attacks()
         setup_king_attacks()
     _INITED = True
 
+#runs at every import
+setup_vars()

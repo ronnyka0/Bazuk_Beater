@@ -1,3 +1,5 @@
 #cython: language_level=3
-cdef class Move:
-    cdef unsigned short move
+cimport Board
+
+
+cdef void move_gen(Board.Board)

@@ -1,0 +1,1 @@
+cdef int log2_pow2(unsigned long long)
